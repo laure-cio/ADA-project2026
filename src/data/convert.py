@@ -33,3 +33,18 @@ def parse_dates(df, columns=("started_at", "ended_at")):
         n_failed += converted.isna().sum() - df[col].isna().sum()
         df[col] = converted
     return df, int(n_failed)
+
+def convert_durations(df):
+    """Step 4 - Give every trip a numeric duration in seconds.
+
+    Old files: use Divvy's duration (text like "1,225.0" -> 1225.0).
+    New files: compute ended_at - started_at.
+    Also returns the computed duration, to compare both in old files.
+    """
+    computed = (df["ended_at"] - df["started_at"]).dt.total_seconds()
+    reported = pd.to_numeric(
+        df["duration_s"].astype("string").str.replace(",", "", regex=False),
+        errors="coerce",
+    )
+    df["duration_s"] = reported.fillna(computed)  # Divvy's value if it exists, else computed
+    return df, computed
