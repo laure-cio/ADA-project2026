@@ -1,0 +1,10 @@
+# Data (too big for GitHub, everyone keeps it locally)
+data/raw/
+data/interim/
+data/clean/
+
+# Mac / Python / Jupyter junk files
+.DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
