@@ -44,3 +44,28 @@ def build_inventory(raw_dir="data/raw"):
                     "columns": columns,
                 })
     return pd.DataFrame(rows)
+
+# Name of the start-time column in each family
+START_COLUMN = {
+    "old_2013": "starttime",
+    "old_2014_2016": "starttime",
+    "old_2017_2019": "start_time",
+    "old_long_names": "01 - Rental Details Local Start Time",
+    "new_2020_2026": "started_at",
+}
+
+
+def trips_per_month(inventory, raw_dir="data/raw"):
+    """Count trips per month in every trip CSV (reads only the start-time column)."""
+    results = []
+    trip_files = inventory[inventory["family"] != "stations"]
+    for _, row in trip_files.iterrows():
+        column = START_COLUMN[row["family"]]
+        with zipfile.ZipFile(Path(raw_dir) / row["zip"]) as zf:
+            with zf.open(row["csv"]) as f:
+                start = pd.read_csv(f, usecols=[column])[column]
+        dates = pd.to_datetime(start, format="mixed")
+        counts = dates.dt.to_period("M").value_counts()
+        for month, n in counts.items():
+            results.append({"csv": row["csv"], "month": month, "n_trips": n})
+    return pd.DataFrame(results)
