@@ -1,8 +1,9 @@
 
 # The City's Heartbeat: Bike-Share as a Social Sensor
 Abstract
-<!-- ~150 words. To write together: motivation, story, why it matters. -->
+<!-- ~150 words. To write together: motivation, story, why it matters. This is a first draft -->
 
+Every day, thousands of Chicagoans take a Divvy bike. Taken together, these trips form a pulse of the city: they rise with summer, fall with winter, and follow the daily rhythm of work and leisure. But some days break the rhythm: a snowstorm, a heat wave, a pandemic, a major concert or a protest. Our idea is to use 13 years of bike-share data (2013–2026, 57 million trips) as a sensor of city life. We first model what a "normal" day looks like, taking into account season, weekday, weather and the growth of the network. Then we detect the days and neighbourhoods that deviate from this normal, and try to explain them with real events. [Story / why it matters: TO COMPLETE]
 
 ## Research Questions
 
@@ -13,9 +14,9 @@ Abstract
 5. (optional) Has the city’s normal rhythm itself changed over time (pre/post COVID, e-bikes)?
  
 ## Proposed additional datasets
-- Weather data: Daily temperature, precipitation, snowfall
-- Holidays data : 
-- Event data: Used only after detection, to explain anomalies, not to define them.
+- Weather data: (Daily temperature, precipitation, snowfall)
+- Holidays data :
+- Event data: (big events local, national, mondial, festivals, storms, COVID, transit closures) Used only after detection, to explain anomalies, not to define them.
 - Chicago community areas: Used to assign each trip start to a zone.
 
 ## Methods
@@ -26,6 +27,33 @@ Step 1 — Data cleaning and harmonisation (done)
 - Station coordinates: trips before 2020 only have a station ID. Positions come from Divvy's station files; for the 41 stations created in 2018–2019 (no station file), we use the median GPS position of their 2020 trips. This method was validated on 571 known stations (median distance 0 m).
 - Cleaning rules: we remove trips shorter than 60 s or longer than 24 h, trips at technical stations (testing, repair, warehouse), trips without a position or outside Chicago, and duplicates (within and between files). 1.5% of trips are removed; 57.3 M are kept.
 - Why it matters: the same rules are applied to every year, so there is no artificial break in 2020 (Divvy stopped filtering false starts in its newer files). We checked that the share removed per day stays low and stable, so cleaning does not create fake anomalies.
+
+## Proposed timeline
+ 
+| Week | Dates | Tasks |
+|---|---|---|
+| P2 | until 13 Oct | Read each other's project ideas, meet, discuss and choose a project |
+| P2 | 14 – 27 Oct | Data cleaning, descriptive statistics, define research questions, organize the team, find and propose additional datasets, propose timeline |
+| P2 | 28 Oct – 6 Nov |  |
+| P2 | until 6 Nov | |
+| 1 | 7 – 13 Nov | |
+| 2 | 14 – 20 Nov |  |
+| 3 | 21 – 27 Nov |  |
+| 4 | 28 Nov – 4 Dec | |
+| 5 | 5 – 11 Dec |  |
+| 6 | 12 – 18 Dec (P3) |  |
+
+
+ ## Organization within the team
+ 
+| Member | Main tasks |
+|---|---|
+| Jeanne |  |
+| Gresi |  |
+| Laure | |
+| Beth | |
+| Sophie |  |
+| All | |
 
 ## Previous example readme 
 
