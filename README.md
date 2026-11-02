@@ -26,13 +26,24 @@ Our project aims to explore whether bike-sharing data can serve as a distributed
 
 ## Proposed additional datasets
 
-- Weather data: Daily temperature, precipitation, snowfall
-- Holidays data :
-- Event data: Used only after detection, to explain anomalies, not to define them.
-- Chicago community areas: Used to assign each trip start to a zone.
+All cover 2022–2025, are small (CSV files under 250 KB; the community areas are a 2 MB GeoJSON) and are already downloaded (`python -m src.scripts.download_external_data`) and joined to the trips by date, and by cell for events.
 
-- [Chicago Weather dataset](https://data.cityofchicago.org/Parks-Recreation/Chicago_Weather/4z7n-5k6z/about_data) from Chicago Data Portal
-- [Public Health Department Events](https://data.cityofchicago.org/Events/Public-Health-Department-Events/38sz-xyf4/data_preview) from Chicago Data Portal
+| Dataset | Use | Source | Size |
+|---|---|---|---|
+| Weather | normal-day variables | [Open-Meteo API](https://open-meteo.com/en/docs/historical-forecast-api) | 1,461 days |
+| Holidays, school breaks | normal-day variables | `holidays` package, school calendar | 1,461 days |
+| Community areas | the 37 cells | Chicago Data Portal | 77 areas |
+| Home games of 7 teams | known events | [MLB Stats API](https://statsapi.mlb.com), ESPN API | 1,160 games |
+| Festivals, parades, races, stadium concerts, protests of 10,000+, DNC | known events | by hand, one news or official link per date | 141 events |
+| Concerts | known events | [showspace.org](https://app.showspace.org/decade/2020?location=chicago-illinois&tab=sheet), geocoded | 615 shows |
+| Storm Events | city-wide drops | [NOAA](https://www.ncei.noaa.gov/stormevents/) | 305 events |
+| CTA daily ridership | second sensor | [Chicago Data Portal API](https://data.cityofchicago.org/d/6iiy-9s97) | 1,461 days |
+
+**Processing.** Each event place gets coordinates and its cell; all lists form one table, one row per event and day (`data/external/events.csv`, 1,929 rows). Events only explain anomalies, never define them. The docs warned us about playoff game types, "home" games played abroad and NOAA events without coordinates; we handle all three.
+
+**Feasibility (`events.ipynb`).** Big events in quiet cells are clearly visible (Riot Fest: 7.7× the cell's normal trips), the same crowd in the busy Loop much less (Lollapalooza: +18%). 38% of the 50 strongest anomalies fall on a known event in their cell (7% by chance). Similar work: Luo et al. 2020 (Citi Bike), Zhang et al. 2016 (Divvy).
+
+**Limits.** The lists are incomplete (one concert website, few protests or street fairs) and routes (Marathon, parades) cover several cells.
 
 ## Methods
 
