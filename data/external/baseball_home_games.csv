@@ -24,8 +24,8 @@ date,start_hour,team,venue,lat,lon
 2022-05-02,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2022-05-03,18,Cubs,Wrigley Field,41.948171,-87.655503
 2022-05-04,18,Cubs,Wrigley Field,41.948171,-87.655503
-2022-05-07,18,Cubs,Wrigley Field,41.948171,-87.655503
 2022-05-07,12,Cubs,Wrigley Field,41.948171,-87.655503
+2022-05-07,18,Cubs,Wrigley Field,41.948171,-87.655503
 2022-05-08,18,Cubs,Wrigley Field,41.948171,-87.655503
 2022-05-09,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2022-05-10,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
@@ -94,8 +94,8 @@ date,start_hour,team,venue,lat,lon
 2022-07-16,19,Cubs,Wrigley Field,41.948171,-87.655503
 2022-07-17,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-07-22,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
-2022-07-23,18,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2022-07-23,12,White Sox,Guaranteed Rate Field,41.83,-87.634167
+2022-07-23,18,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2022-07-24,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2022-07-25,19,Cubs,Wrigley Field,41.948171,-87.655503
 2022-07-26,13,Cubs,Wrigley Field,41.948171,-87.655503
@@ -122,8 +122,8 @@ date,start_hour,team,venue,lat,lon
 2022-08-20,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-21,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-22,19,Cubs,Wrigley Field,41.948171,-87.655503
-2022-08-23,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-23,19,Cubs,Wrigley Field,41.948171,-87.655503
+2022-08-23,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-24,19,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-25,13,Cubs,Wrigley Field,41.948171,-87.655503
 2022-08-26,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
@@ -215,10 +215,10 @@ date,start_hour,team,venue,lat,lon
 2023-05-28,13,Cubs,Wrigley Field,41.948171,-87.655503
 2023-05-29,13,Cubs,Wrigley Field,41.948171,-87.655503
 2023-05-29,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
-2023-05-30,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2023-05-30,19,Cubs,Wrigley Field,41.948171,-87.655503
-2023-05-31,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
+2023-05-30,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2023-05-31,13,Cubs,Wrigley Field,41.948171,-87.655503
+2023-05-31,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2023-06-02,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2023-06-03,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2023-06-04,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
@@ -337,8 +337,8 @@ date,start_hour,team,venue,lat,lon
 2024-04-15,18,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-04-17,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-04-19,13,Cubs,Wrigley Field,41.948171,-87.655503
-2024-04-20,18,Cubs,Wrigley Field,41.948171,-87.655503
 2024-04-20,13,Cubs,Wrigley Field,41.948171,-87.655503
+2024-04-20,18,Cubs,Wrigley Field,41.948171,-87.655503
 2024-04-21,13,Cubs,Wrigley Field,41.948171,-87.655503
 2024-04-23,18,Cubs,Wrigley Field,41.948171,-87.655503
 2024-04-24,18,Cubs,Wrigley Field,41.948171,-87.655503
@@ -388,10 +388,10 @@ date,start_hour,team,venue,lat,lon
 2024-06-15,13,Cubs,Wrigley Field,41.948171,-87.655503
 2024-06-16,12,Cubs,Wrigley Field,41.948171,-87.655503
 2024-06-17,19,Cubs,Wrigley Field,41.948171,-87.655503
-2024-06-18,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-06-18,19,Cubs,Wrigley Field,41.948171,-87.655503
-2024-06-19,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
+2024-06-18,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-06-19,13,Cubs,Wrigley Field,41.948171,-87.655503
+2024-06-19,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-06-20,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-06-21,13,Cubs,Wrigley Field,41.948171,-87.655503
 2024-06-22,13,Cubs,Wrigley Field,41.948171,-87.655503
@@ -449,8 +449,8 @@ date,start_hour,team,venue,lat,lon
 2024-08-25,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-26,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-27,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
-2024-08-28,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-28,16,White Sox,Guaranteed Rate Field,41.83,-87.634167
+2024-08-28,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-29,13,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-30,19,White Sox,Guaranteed Rate Field,41.83,-87.634167
 2024-08-31,18,White Sox,Guaranteed Rate Field,41.83,-87.634167
@@ -549,10 +549,10 @@ date,start_hour,team,venue,lat,lon
 2025-06-13,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-06-14,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-06-15,13,Cubs,Wrigley Field,41.948171,-87.655503
-2025-06-17,18,White Sox,Rate Field,41.83,-87.634167
 2025-06-17,19,Cubs,Wrigley Field,41.948171,-87.655503
-2025-06-19,13,White Sox,Rate Field,41.83,-87.634167
+2025-06-17,18,White Sox,Rate Field,41.83,-87.634167
 2025-06-19,13,Cubs,Wrigley Field,41.948171,-87.655503
+2025-06-19,13,White Sox,Rate Field,41.83,-87.634167
 2025-06-20,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-06-21,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-06-22,13,Cubs,Wrigley Field,41.948171,-87.655503
@@ -571,8 +571,8 @@ date,start_hour,team,venue,lat,lon
 2025-07-07,18,White Sox,Rate Field,41.83,-87.634167
 2025-07-08,18,White Sox,Rate Field,41.83,-87.634167
 2025-07-09,13,White Sox,Rate Field,41.83,-87.634167
-2025-07-11,19,White Sox,Rate Field,41.83,-87.634167
 2025-07-11,14,White Sox,Rate Field,41.83,-87.634167
+2025-07-11,19,White Sox,Rate Field,41.83,-87.634167
 2025-07-12,15,White Sox,Rate Field,41.83,-87.634167
 2025-07-13,13,White Sox,Rate Field,41.83,-87.634167
 2025-07-18,13,Cubs,Wrigley Field,41.948171,-87.655503
@@ -641,3 +641,8 @@ date,start_hour,team,venue,lat,lon
 2025-09-26,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-09-27,13,Cubs,Wrigley Field,41.948171,-87.655503
 2025-09-28,14,Cubs,Wrigley Field,41.948171,-87.655503
+2025-09-30,14,Cubs,Wrigley Field,41.948171,-87.655503
+2025-10-01,14,Cubs,Wrigley Field,41.948171,-87.655503
+2025-10-02,16,Cubs,Wrigley Field,41.948171,-87.655503
+2025-10-08,16,Cubs,Wrigley Field,41.948171,-87.655503
+2025-10-09,20,Cubs,Wrigley Field,41.948171,-87.655503
