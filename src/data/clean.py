@@ -23,6 +23,7 @@ LNG_MIN, LNG_MAX = -88.00, -87.50
 USER_TYPES = {"Subscriber": "member", "Customer": "casual", "Dependent": "member",
               "member": "member", "casual": "casual"}
 
+
 BIKE_TYPES = {"docked_bike": "classic", "classic_bike": "classic",
               "electric_bike": "electric"}
 
