@@ -70,16 +70,19 @@ def storms_in_chicago(storms, cells_path="data/external/cells.geojson"):
 
 
 def baseball_home_games(years=YEARS):
-    """Cubs (Wrigley Field) and White Sox home games, regular season.
+    """Cubs (Wrigley Field) and White Sox home games, regular season + playoffs.
 
+    A few "home" games are played away from Chicago (Cubs in Tokyo, 2025):
+    they keep their venue name, so they can be filtered out.
     Source: MLB Stats API, https://statsapi.mlb.com
     """
     teams = {112: "Cubs", 145: "White Sox"}
     rows = []
     for year in years:
         for team_id, team in teams.items():
+            # R = regular season, F/D/L/W = the four playoff rounds
             url = (f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId={team_id}"
-                   f"&season={year}&gameType=R&hydrate=venue(location)")
+                   f"&season={year}&gameType=R,F,D,L,W&hydrate=venue(location)")
             for day in requests.get(url, timeout=60).json()["dates"]:
                 for g in day["games"]:
                     if g["teams"]["home"]["team"]["id"] != team_id:
@@ -136,3 +139,45 @@ def park_big_events(start="2022-01-01", end="2025-12-31"):
     return (df.groupby(["event_description", "park_facility_name"])
               .agg(first_day=("date", "min"), last_day=("end_date", "max"))
               .reset_index().sort_values("first_day").reset_index(drop=True))
+
+
+def pro_sports_home_games(years=YEARS):
+    """Home games of the other Chicago pro teams (regular season + playoffs).
+
+    Bears and Fire (Soldier Field), Bulls and Blackhawks (United Center),
+    Sky (Wintrust Arena). Games played elsewhere (e.g. Fire at SeatGeek
+    Stadium in Bridgeview) keep their venue name, so they can be filtered out.
+    Source: ESPN public API, https://site.api.espn.com/apis/site/v2/sports
+    """
+    teams = {
+        "Bears": "football/nfl/teams/chi",
+        "Bulls": "basketball/nba/teams/chi",
+        "Blackhawks": "hockey/nhl/teams/chi",
+        "Sky": "basketball/wnba/teams/chi",
+        "Fire": "soccer/usa.1/teams/182",
+    }
+    rows = []
+    for team, path in teams.items():
+        # NFL, NBA and NHL seasons cross the new year, so look one season before
+        # and after; the dates are cut to the years asked at the end
+        for season in range(years[0] - 1, years[-1] + 2):
+            # soccer has no regular/playoff split in this API
+            for season_type in ([""] if "soccer" in path else ["&seasontype=2", "&seasontype=3"]):
+                url = (f"https://site.api.espn.com/apis/site/v2/sports/{path}/schedule"
+                       f"?season={season}{season_type}")
+                for e in requests.get(url, timeout=60).json().get("events", []):
+                    c = e["competitions"][0]
+                    home = [x for x in c["competitors"] if x["homeAway"] == "home"][0]
+                    if not home["team"]["displayName"].startswith("Chicago"):
+                        continue
+                    start = pd.Timestamp(e["date"]).tz_convert("America/Chicago")
+                    rows.append({
+                        "date": start.strftime("%Y-%m-%d"),
+                        "start_hour": start.hour,
+                        "team": team,
+                        "venue": c.get("venue", {}).get("fullName"),
+                        "status": c.get("status", {}).get("type", {}).get("name"),
+                    })
+    df = pd.DataFrame(rows).drop_duplicates()
+    df = df[df["date"].str[:4].astype(int).isin(years)]
+    return df.sort_values("date").reset_index(drop=True)
