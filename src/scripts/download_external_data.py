@@ -1,8 +1,8 @@
 """Download the external datasets and build the events table (2022-2025).
 
 Run from the repository root:  python -m src.scripts.download_external_data
-The hand-made lists (big_events.csv, more_events.csv) and Gresi's concert
-list are not downloaded: they are already in data/.
+The hand-made lists (big_events.csv, more_events.csv) and the concert list
+are not downloaded: they are already in data/.
 """
 from src.data.events import build_events_table
 from src.data.external import (baseball_home_games, cta_daily_ridership, pro_sports_home_games,

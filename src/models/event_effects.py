@@ -1,13 +1,14 @@
 """Do events change the number of trips in their cell?
 
-A simple baseline to explore the events, before the team's negative binomial
-model is ready (its anomaly scores can replace it later):
+A simple baseline to explore the events (for P3, the anomaly scores of the
+negative binomial model replace it):
 - "normal" for a cell and a day = median of the same weekday 1 to 4 weeks
   before and after, leaving out holidays and the days with a big event in
   that cell (at least 3 such days are needed, otherwise no normal);
 - ratio = trips / normal, for each cell and for the whole city;
-- relative ratio = cell ratio / city ratio, so that a rainy or hot day, which
-  changes the whole city, does not look like an event effect.
+- relative ratio = cell ratio / city ratio, with the city compared on the same
+  days as the cell, so that a rainy or hot day, which changes the whole city,
+  does not look like an event effect.
 """
 import warnings
 
@@ -17,6 +18,7 @@ import pandas as pd
 OFFSETS = [-28, -21, -14, -7, 7, 14, 21, 28]
 MIN_NEIGHBOURS = 3
 BIG = ("Very large",)              # events of 5,000+ people, left out of the normal
+MAIN_CELL = 0.9                    # a group of events is named after a cell if this share of its days is there
 YEARS = (2022, 2025)
 HOLIDAY_FLAGS = ["is_holiday", "is_major_holiday", "is_holiday_eve", "is_winter_break",
                  "is_thanksgiving_week"]
@@ -26,6 +28,8 @@ def load_daily_counts(path="data/daily_counts_cells.parquet", years=(2021, 2026)
     """Trips per day: a table with one column per cell, and the city total.
 
     One year of margin on each side, so that the 2022-2025 days have neighbours.
+    The calendar and the event lists only cover 2022-2025, so the margin days
+    are not filtered.
     """
     d = pd.read_parquet(path, columns=["date", "cell_id", "n_trips"])
     d["date"] = pd.to_datetime(d["date"])
@@ -34,13 +38,13 @@ def load_daily_counts(path="data/daily_counts_cells.parquet", years=(2021, 2026)
     return cells, cells.sum(axis=1)
 
 
-def holiday_dates(path="data/calendar.csv"):
-    """Holidays, their eves, winter break and Thanksgiving week (team calendar)."""
+def holiday_dates(path="data/external/calendar.csv"):
+    """Holidays, their eves, winter break and Thanksgiving week (from the calendar)."""
     cal = pd.read_csv(path, parse_dates=["date"])
     return pd.DatetimeIndex(cal.loc[cal[HOLIDAY_FLAGS].any(axis=1), "date"])
 
 
-def holiday_labels(path="data/calendar.csv"):
+def holiday_labels(path="data/external/calendar.csv"):
     """Name of the holiday (or holiday period) of each day, "" otherwise."""
     cal = pd.read_csv(path, parse_dates=["date"]).set_index("date")
     label = cal["holiday_name"].where(cal["is_holiday"], "").fillna("")
@@ -80,7 +84,8 @@ def normal_level(trips, skip=None):
 def relative_ratios(cells, city, events, holidays=()):
     """Ratios to normal for every day: a dict of date x cell tables.
 
-    Keys: "relative" (cell ratio / city ratio), "cell", "city" (a Series),
+    Keys: "relative" (cell ratio / city ratio on the same comparison days),
+    "cell", "city" (a Series: the city against its own comparison days),
     "normal" (normal number of trips) and "skip" (days with a big event in
     the cell, or a holiday).
     holidays: dates left out of the normal of every cell and of the city.
@@ -91,8 +96,10 @@ def relative_ratios(cells, city, events, holidays=()):
     normal = normal_level(cells, skip)
     cell_ratio = cells / normal.where(normal > 0)
     city_ratio = city / normal_level(city, pd.Series(off, index=city.index))
-    return {"relative": cell_ratio.div(city_ratio, axis=0), "cell": cell_ratio,
-            "city": city_ratio, "normal": normal, "skip": skip}
+    # the city on the same comparison days as each cell, so that their weather cancels out
+    city_table = pd.DataFrame({c: city for c in cells.columns})
+    return {"relative": cell_ratio / (city_table / normal_level(city_table, skip)),
+            "cell": cell_ratio, "city": city_ratio, "normal": normal, "skip": skip}
 
 
 def lookup(table, rows, cols):
@@ -128,7 +135,8 @@ def add_ratios(events, r):
 def event_effects(events, r, group="event", cell_col="cell_name", n_boot=2000, seed=0):
     """Median ratios on the days of each event (or group of events).
 
-    cell_col: column used to name the event's cell in the result.
+    cell_col: column used to name the event's cell in the result ("several
+    cells" if no cell has at least MAIN_CELL of the days).
     low, high: 95% bootstrap interval of the median relative ratio.
     noise_low, noise_high: normal day-to-day range (10%-90%) of the same cells
     and months. above_noise: share of the event days above that range
@@ -140,8 +148,10 @@ def event_effects(events, r, group="event", cell_col="cell_name", n_boot=2000, s
     for name, g in e.groupby(group):
         x = g["relative"].to_numpy()
         boot = np.median(rng.choice(x, (n_boot, len(x))), axis=1)
+        where = g[cell_col].value_counts(normalize=True)
         rows.append({
-            group: name, "cell": g[cell_col].mode()[0], "days": len(x),
+            group: name, "cell": where.index[0] if where.iloc[0] >= MAIN_CELL else "several cells",
+            "days": len(x),
             "relative": np.median(x),
             "low": np.percentile(boot, 2.5), "high": np.percentile(boot, 97.5),
             "noise_low": g["noise_low"].median(), "noise_high": g["noise_high"].median(),
@@ -153,16 +163,24 @@ def event_effects(events, r, group="event", cell_col="cell_name", n_boot=2000, s
 
 
 def top_anomalies(r, n=30, min_normal=100, highest=True):
-    """The n cell-days furthest from normal (relative ratio), 2022-2025.
+    """The n cell-days furthest from normal, 2022-2025.
 
+    A cell-day is high only if the cell is above normal both in its own trips
+    and compared with the city, so it is ranked by the smaller of the two ratios
+    (the larger one for the lowest days). Otherwise a storm that empties the city
+    would make a cell that loses a little less look like a rise.
     Only cell-days with a normal level of at least min_normal trips, because
     in very quiet cells a few trips more or less already make a big ratio.
     """
-    rel = r["relative"].where(r["normal"] >= min_normal)
-    rel = rel[rel.index.year.isin(range(YEARS[0], YEARS[1] + 1))]
-    s = (rel.rename_axis("date").rename_axis("cell_id", axis=1).reset_index()
-            .melt(id_vars="date", value_name="relative").dropna())
-    return s.sort_values("relative", ascending=not highest).head(n).reset_index(drop=True)
+    both = np.minimum if highest else np.maximum
+    score = both(r["relative"], r["cell"]).where(r["normal"] >= min_normal)
+    score = score[score.index.year.isin(range(YEARS[0], YEARS[1] + 1))]
+    s = (score.rename_axis("date").rename_axis("cell_id", axis=1).reset_index()
+              .melt(id_vars="date", value_name="score").dropna())
+    s = s.sort_values("score", ascending=not highest).head(n).reset_index(drop=True)
+    s["relative"] = lookup(r["relative"], s["date"], s["cell_id"])
+    s["cell_ratio"] = lookup(r["cell"], s["date"], s["cell_id"])
+    return s.drop(columns="score")
 
 
 def explain(anomalies, events, names=None, holidays=None):
@@ -180,13 +198,15 @@ def explain(anomalies, events, names=None, holidays=None):
 
 
 def match_rate(r, events, n=100, min_normal=100):
-    """Share of the top-n anomalies with an event in their cell that day,
-    compared with the share of all cell-days that have one (chance level)."""
+    """Share of the top-n anomalies with an event in their cell that day, compared
+    with chance: the share of days with an event in the same cell, month and weekday."""
     has = event_days(events, r["relative"].index, r["relative"].columns,
                      sizes=events["size"].unique())
     top = top_anomalies(r, n=n, min_normal=min_normal)
     hit = np.mean(lookup(has.astype(float), top["date"], top["cell_id"]))
     eligible = (r["normal"] >= min_normal) & r["relative"].notna()
     eligible = eligible[eligible.index.year.isin(range(YEARS[0], YEARS[1] + 1))]
-    chance = np.nanmean(has.reindex_like(eligible).astype(float).where(eligible).to_numpy())
+    days = has.reindex_like(eligible).astype(float).where(eligible)
+    chance = np.mean([days.loc[(days.index.month == d.month) & (days.index.dayofweek == d.dayofweek), c].mean()
+                      for d, c in zip(top["date"], top["cell_id"])])
     return {"top": n, "with_event": hit, "chance": chance, "times_chance": hit / chance}

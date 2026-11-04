@@ -26,7 +26,7 @@ Our project aims to explore whether bike-sharing data can serve as a distributed
 
 ## Proposed additional datasets
 
-All cover 2022–2025, are small (CSV files under 250 KB; the community areas are a 2 MB GeoJSON) and are already downloaded (`python -m src.scripts.download_external_data`) and joined to the trips by date, and by cell for events.
+All cover 2022–2025 and are small (CSV files under 300 KB; the community areas are a 2 MB GeoJSON). Storms, games and CTA ridership come from `python -m src.scripts.download_external_data`, the hand-made lists and the concert list are already in `data/`, and the weather, calendar and community areas are prepared in `results.ipynb` (sections 3 and 4). They are joined to the trips by date, and by cell for events.
 
 | Dataset | Use | Source | Size |
 |---|---|---|---|
@@ -34,14 +34,14 @@ All cover 2022–2025, are small (CSV files under 250 KB; the community areas ar
 | Holidays, school breaks | normal-day variables | `holidays` package, school calendar | 1,461 days |
 | Community areas | the 37 cells | Chicago Data Portal | 77 areas |
 | Home games of 7 teams | known events | [MLB Stats API](https://statsapi.mlb.com), ESPN API | 1,160 games |
-| Festivals, parades, races, stadium concerts, protests of 10,000+, DNC | known events | by hand, one news or official link per date | 141 events |
-| Concerts | known events | [showspace.org](https://app.showspace.org/decade/2020?location=chicago-illinois&tab=sheet), geocoded | 615 shows |
+| Festivals, parades, races, stadium concerts, protests of 10,000+, DNC | known events | by hand, one news or official link per date | 142 events |
+| Concerts | known events | [showspace.org](https://app.showspace.org/decade/2020?location=chicago-illinois&tab=sheet), geocoded | 616 shows |
 | Storm Events | city-wide drops | [NOAA](https://www.ncei.noaa.gov/stormevents/) | 305 events |
 | CTA daily ridership | second sensor | [Chicago Data Portal API](https://data.cityofchicago.org/d/6iiy-9s97) | 1,461 days |
 
-**Processing.** Each event place gets coordinates and its cell; all lists form one table, one row per event and day (`data/external/events.csv`, 1,929 rows). Events only explain anomalies, never define them. The docs warned us about playoff game types, "home" games played abroad and NOAA events without coordinates; we handle all three.
+**Processing.** Each event place gets coordinates and its cell; all lists form one table, one row per event and day (`data/external/events.csv`, 1,931 rows). Events only explain anomalies, never define them. The docs warned us about playoff game types, "home" games played abroad and NOAA events without coordinates; we handle all three.
 
-**Feasibility (`events.ipynb`).** Big events in quiet cells are clearly visible (Riot Fest: 7.7× the cell's normal trips), the same crowd in the busy Loop much less (Lollapalooza: +18%). 38% of the 50 strongest anomalies fall on a known event in their cell (7% by chance). Similar work: Luo et al. 2020 (Citi Bike), Zhang et al. 2016 (Divvy).
+**Feasibility (`results.ipynb`, section 4.3).** Big events in quiet cells are clearly visible (Riot Fest: 7.7× the cell's normal trips), the same crowd in the busy Loop much less (Lollapalooza: +19%). 46% of the 50 strongest anomalies fall on a known event in their cell (16% by chance). Similar work: Luo et al. 2020 (Citi Bike), Zhang et al. 2016 (Divvy).
 
 **Limits.** The lists are incomplete (one concert website, few protests or street fairs) and routes (Marathon, parades) cover several cells.
 
@@ -68,6 +68,14 @@ Step 1 — Data cleaning and harmonisation (done)
 - Statistical analysis: Estimate effect sizes and confidence intervals to assess whether anomalies are more frequent or pronounced during event periods than during control periods.
 
 **RQ3. Characterizing anomalies**
+
+## Questions for TAs
+
+Cubs and White Sox home games are regularly scheduled and known in advance, with about 80 a year at each stadium. They raise the trips of their cells (Lake View and Armour Square) by about 14%. Since they are part of the regular rhythm of these cells, should they be variables of the "normal day" model, or anomalies that we try to detect?
+
+## Use of AI tools
+
+Events part: we used an AI assistant (Claude) to help write code, search for event dates and edit text. Each date in the hand-made lists has its own source link.
 
 ##  Previous example readme
 
