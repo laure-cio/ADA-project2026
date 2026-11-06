@@ -37,6 +37,7 @@ All cover 2022–2025 and are small CSV files.
 - **Weather:** temperature is strongly linked to daily trips, but partly through the season, so its effect must be measured inside the model.
 - **Events:** almost half of the strongest anomalies fall on a known event in their cell (three times more than by chance). Big events are clearly visible in quiet cells but diluted in busy ones (Riot Fest vs Lollapalooza).
   
+
 **Limitations:** Each holiday occurs only 4 times in 2022–2025, so some calendar effects are uncertain. Event lists are incomplete (collected by hand or from a single website), and each event is placed in a single cell, so events along a route, such as marathons or parades, are only partly captured.
 
 ## Methods
@@ -74,20 +75,18 @@ All cover 2022–2025 and are small CSV files.
 ## Project Structure
 
 ```
-├── data
-│
-├── src
-│   ├── data
-│   ├── models
-│   ├── utils
-│   ├── scripts
-│
-├── tests
-│
-├── results.ipynb
-│
-├── .gitignore
-├── pip_requirements.txt
+├───data
+│   ├───external
+│   ├───forecast
+│   │   ├───clean
+│   │   └───raw
+├───src
+│   ├───data
+│   │   └───__pycache__
+│   ├───models
+│   ├───scripts
+│   └───utils
+|───tests
 └── README.md
 ```
 
