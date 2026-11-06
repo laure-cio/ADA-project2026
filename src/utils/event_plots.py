@@ -1,4 +1,4 @@
-"""Plots for the events part (events.ipynb).
+"""Plots for the events part (section 4.3 of results.ipynb).
 
 A "cell" is one of the 37 zones of the grid: one neighbourhood (community
 area), or a group of small neighbourhoods merged together ("Group 19").

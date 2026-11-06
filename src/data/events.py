@@ -11,7 +11,8 @@ Inputs:
                                            stadium concerts, protests, DNC
 - data/external/baseball_home_games.csv    Cubs and White Sox
 - data/external/pro_sports_home_games.csv  Bears, Bulls, Blackhawks, Sky, Fire
-- data/concerts/data/chicago_concerts.csv + chicago_venues.csv  (Gresi)
+- data/concerts/data/chicago_concerts.csv + chicago_venues.csv  concert list
+                                           (showspace.org) and its venues
 - data/external/cells.geojson              the 37 cells of the grid
 Every date in big_events.csv and more_events.csv has its own source link.
 """
@@ -23,7 +24,7 @@ from matplotlib.path import Path
 
 YEARS = (2022, 2025)
 
-# Position (lat, lon) of the places that are not in Gresi's venue list.
+# Position (lat, lon) of the places that are not in the venue list (chicago_venues.csv).
 # Points on the lakefront are moved slightly inland, because the cell
 # outlines stop at the shore.
 PLACES = {
@@ -59,7 +60,7 @@ CAPACITY = {
     "Wintrust Arena": 10387,
 }
 
-# Venue capacities from Gresi's notebook (data/concerts/Events_concerts.ipynb).
+# Approximate capacity (people) of the concert venues.
 CONCERT_CAPACITY = {
     "Aragon Ballroom": 4500, "The Beat Kitchen": 275, "Empty Bottle": 400,
     "House of Blues": 1800, "Metro": 1150, "Sleeping Village": 300,
@@ -79,8 +80,14 @@ CONCERT_CAPACITY = {
     "Music Joint": 150, "Live Wire Lounge": 150, "Fireside Bowl": 140,
 }
 
-# Fixes to Gresi's concert list
+# Fixes to the concert list
 VENUE_FIX = {"Douglas Park": "Douglass Park", "Riot Fest": "Douglass Park"}
+SHOW_FIX = {                               # (name, date in the list) -> right name and dates
+    # postponed: https://www.cbsnews.com/chicago/news/rescheduled-madonna-celebration-tour-dates
+    ("Madonna", "2023-08-09"): ("Madonna", ["2024-02-01", "2024-02-02"]),
+    # https://en.wikipedia.org/wiki/Star-Crossed:_Unveiled
+    ("Kacer Musgraves", "2022-01-19"): ("Kacey Musgraves", ["2022-01-20"]),
+}
 STREET_FESTIVALS = {                       # "Unknown Venue" rows, placed by festival
     "Square Roots Festival": "Old Town School of Folk Music",
     "Taste Of Randolph Street": "Randolph Street (West Loop)",
@@ -141,7 +148,7 @@ def cell_of(lat, lon, cells):
 
 
 def size_class(capacity):
-    """Same classes as in Gresi's notebook."""
+    """Size of an event from the capacity of its venue (people)."""
     if pd.isna(capacity):
         return "Unknown"
     if capacity < 300:
@@ -181,9 +188,19 @@ def sports_games(data="data/"):
     })
 
 
-def gresi_concerts(curated, data="data/"):
-    """Gresi's concert list (showspace.org), without what the other lists cover."""
-    c = pd.read_csv(data + "concerts/data/chicago_concerts.csv", parse_dates=["date"])
+def fix_shows(concerts):
+    """Correct the name and the dates of the shows in SHOW_FIX."""
+    rows = []
+    for row in concerts.to_dict("records"):
+        day = row["date"].strftime("%Y-%m-%d")
+        name, days = SHOW_FIX.get((row["headliner"], day), (row["headliner"], [day]))
+        rows += [{**row, "headliner": name, "date": pd.Timestamp(d)} for d in days]
+    return pd.DataFrame(rows)
+
+
+def concert_list(curated, data="data/"):
+    """The concert list (showspace.org), without what the other lists cover."""
+    c = fix_shows(pd.read_csv(data + "concerts/data/chicago_concerts.csv", parse_dates=["date"]))
     c["venue"] = c["venue"].replace(VENUE_FIX)
     unknown = c["venue"] == "Unknown Venue"
     c.loc[unknown, "venue"] = c.loc[unknown, "special_event"].map(STREET_FESTIVALS)
@@ -198,7 +215,7 @@ def gresi_concerts(curated, data="data/"):
         "event": c["special_event"].where(street, c["headliner"]),
         "type": np.where(street, "festival", "concert"),
         "venue": c["venue"],
-        "source": "showspace.org (Gresi)",
+        "source": "showspace.org",
     })
 
 
@@ -214,10 +231,10 @@ def effect_group(events):
     groups = events["event"].where(events["type"] != "sport", events["event"] + "s")
     groups = groups.mask(events["type"].eq("stadium concert"), "Concerts at " + events["venue"])
     groups = groups.mask(events["type"].eq("protest"), "Protests (10,000+)")
-    gresi = events["source"].str.contains("Gresi")
+    listed = events["source"].eq("showspace.org")
     size = events["size"].str.lower().replace("unknown", "unknown-size")
-    groups = groups.mask(gresi & events["type"].eq("concert"), "Concerts, " + size + " venues")
-    groups = groups.mask(gresi & events["type"].eq("festival"), "Street festivals")
+    groups = groups.mask(listed & events["type"].eq("concert"), "Concerts, " + size + " venues")
+    groups = groups.mask(listed & events["type"].eq("festival"), "Street festivals")
     return groups
 
 
@@ -225,7 +242,7 @@ def build_events_table(data="data/"):
     """All the events 2022-2025 with their position, cell and size."""
     cells, names = load_cells(data + "external/cells.geojson")
     curated = curated_events(data)
-    events = pd.concat([curated, sports_games(data), gresi_concerts(curated, data)],
+    events = pd.concat([curated, sports_games(data), concert_list(curated, data)],
                        ignore_index=True)
     events = events[events["date"].dt.year.between(*YEARS)]
     events = events.drop_duplicates(["date", "event", "venue"])   # e.g. doubleheaders
