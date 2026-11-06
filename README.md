@@ -73,23 +73,20 @@ All cover 2022–2025 and are small CSV files.
 
 ## Project Structure
 
-```
-├───data
-│   ├───concerts
-│   │   └───data
-│   ├───external
-│   ├───forecast
-│   │   ├───clean
-│   │   └───raw
-│       ├───chicago_events
-├───src
-│   ├───data
-│   │   └───__pycache__
-│   ├───models
-│   ├───scripts
-│   └───utils
-|───tests
+├── data
+│
+├── src
+│   ├── data
+│   ├── models
+│   ├── utils
+│   ├── scripts
+│
+├── tests
+│
+├── results.ipynb
+│
+├── .gitignore
+├── pip_requirements.txt
 └── README.md
-```
 
 **Use of AI tools:** AI tools were used to clarify the use of Python libraries and assist with selected grammatical corrections in the report. All AI-generated suggestions were reviewed and adapted by the group.
