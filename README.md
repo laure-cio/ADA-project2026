@@ -63,5 +63,22 @@ All cover 2022–2025 and are small CSV files.
 5. Since home games increase bike-share trips in their respective cells by approximately 14% should home games be included as predictors in the baseline model?
 6. To train our model, would it make sense to have a broader classification of events? Because it would be hard to distinguish between the effect of a concert and a baseball game, since we could expect both to increase bike usage, while a marathon or street closure might have the same impact on lowering the cycling rate in each cell.
 
+## Project Structure
+├── data                        
+│
+├── src                         
+│   ├── data                            
+│   ├── models                          
+│   ├── utils                           
+│   ├── scripts                         
+│
+├── tests                       
+│
+├── results.ipynb               
+│
+├── .gitignore                  
+├── pip_requirements.txt        
+└── README.md
+
 **Use of AI tools:** AI tools were used to clarify the use of Python libraries and assist with selected grammatical corrections in the report. All AI-generated suggestions were reviewed and adapted by the group.
  
