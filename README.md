@@ -25,13 +25,14 @@ All cover 2022–2025 and are small CSV files.
 | Storm events | NOAA | 305 events |
 | CTA daily ridership | Chicago Data Portal | 1,461 days |
  
-**Use.** Calendar and weather will be joined to the daily trips by date and enter the model, so that regular changes are not mistaken for anomalies. Events are joined by date and cell, and only explain anomalies, never define them. CTA ridership could be a second indicator of city activity.
+**Use:** Calendar and weather will be joined to the daily trips by date and enter the model, so that regular changes are not mistaken for anomalies. Events are joined by date and cell, and only explain anomalies, never define them. CTA ridership could be a second indicator of city activity.
  
 **Feasibility.**
 - **Calendar:** holidays have clear effects (e.g. Christmas −75 %, Labor Day +13 %).
 - **Weather:** temperature is strongly linked to daily trips, but partly through the season, so its effect must be measured inside the model.
 - **Events:** almost half of the strongest anomalies fall on a known event in their cell (three times more than by chance). Big events are clearly visible in quiet cells but diluted in busy ones (Riot Fest vs Lollapalooza).
-**Limitations.** Each holiday occurs only 4 times in 2022–2025, so some calendar effects are uncertain. Event lists are incomplete (collected by hand or from a single website), and each event is placed in a single cell, so events along a route, such as marathons or parades, are only partly captured.
+  
+**Limitations:** Each holiday occurs only 4 times in 2022–2025, so some calendar effects are uncertain. Event lists are incomplete (collected by hand or from a single website), and each event is placed in a single cell, so events along a route, such as marathons or parades, are only partly captured.
  
 ## Methods
 **Data cleaning.** 116 CSVs in 6 formats (2013–2026) are harmonised to 14 common columns and stored as Parquet. Trips before 2020 only have a station ID: positions come from Divvy’s station files, or for 41 newer stations from the median GPS position of their 2020 trips (validated on 571 stations). We remove trips under 60 s or over 24 h, technical stations, trips outside Chicago and duplicates (1.5 %, 57.3 M kept). The same rules apply to every year, so cleaning creates no fake anomalies.
@@ -45,14 +46,14 @@ All cover 2022–2025 and are small CSV files.
 **Anomalies and events.** For now, an event’s effect is measured by comparing its cell with the same weekday in the weeks around it, corrected by the change in the whole city. In P3, anomalies will come from the cell model, be located by zooming into the areas and stations of a flagged cell, and be matched with known events (RQ2) and compared between event types (RQ3).
  
 ## Proposed timeline
-| Week | Goal |
-|---|---|
-| 9–15 Nov | City model A and B (calendar + weather) - Label the data for classification. |
-| 16–22 Nov | Cell model |
-| 23–29 Nov | Anomaly detection and validation on known cases |
-| 30 Nov–6 Dec | Link with events (RQ2) and spatial patterns (RQ3) |
-| 7–13 Dec | Data story website and final notebook |
-| 14–18 Dec | Review: README, notebook, website |
+| Week | Goal | Member | 
+|---|---|--- |
+| 9–15 Nov | City model A and B (calendar + weather) - Label the data for classification. | Laure + Beth
+| 16–22 Nov | Cell model | Laure + Jeanne
+| 23–29 Nov | Anomaly detection and validation on known cases | Sophie + Gresi
+| 30 Nov–6 Dec | Link with events (RQ2) and spatial patterns (RQ3) | Sophie + Gresi
+| 7–13 Dec | Data story website and final notebook | Jeanne + Beth 
+| 14–18 Dec | Review: README, notebook, website | Everyone 
  
 ## Organization within the team
 | Member | To do (P3) |
