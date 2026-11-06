@@ -12,7 +12,7 @@ Our project aims to explore whether bike-sharing data can serve as a distributed
 2. To what extent can detected anomalies be associated with real-world events, such as extreme weather, public gatherings?
 3. Can the spatial patterns of anomalies help distinguish between different types of urban events?
 4. Do events belonging to the same category produce mobility patterns that are more similar to one another than events from different categories?
-## Proposed additional datasets
+## Proposed additional datasets 
 All cover 2022–2025 and are small CSV files.
  
 | Dataset | Source | Size |
@@ -45,7 +45,7 @@ All cover 2022–2025 and are small CSV files.
  
 **Anomalies and events.** For now, an event’s effect is measured by comparing its cell with the same weekday in the weeks around it, corrected by the change in the whole city. In P3, anomalies will come from the cell model, be located by zooming into the areas and stations of a flagged cell, and be matched with known events (RQ2) and compared between event types (RQ3).
  
-## Proposed timeline
+## Proposed timeline an Organization within the team
 | Week | Goal | Member | 
 |---|---|--- |
 | 9–15 Nov | City model A and B (calendar + weather) - Label the data for classification. | Laure + Beth
@@ -54,16 +54,6 @@ All cover 2022–2025 and are small CSV files.
 | 30 Nov–6 Dec | Link with events (RQ2) and spatial patterns (RQ3) | Sophie + Gresi
 | 7–13 Dec | Data story website and final notebook | Jeanne + Beth 
 | 14–18 Dec | Review: README, notebook, website | Everyone 
- 
-## Organization within the team
-| Member | To do (P3) |
-|---|---|
-| Jeanne | Cell model + Data story website and final notebook |
-| Laure | City model A and B (calendar + weather), Cell model |
-| Beth | City model A and B (calendar + weather) + Data story website and final notebook |
-| Sophie | Anomaly detection and validation on known cases + Link with events and spatial pattern |
-| Gresi | Link with events (RQ2) and spatial patterns (RQ3) + Data story website and final notebook |
-| Everyone | Final review |
  
 ## Questions for TAs
 1. Is it reasonable to detect anomalies on the 37 cells, then zoom into flagged cells (areas, stations) to locate events?
