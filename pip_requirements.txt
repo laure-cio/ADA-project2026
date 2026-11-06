@@ -5,4 +5,5 @@ matplotlib
 scipy
 statsmodels
 geopandas
+holidays
 requests
